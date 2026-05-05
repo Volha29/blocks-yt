@@ -1,6 +1,7 @@
 export default class Data {
     static gameW = 720;
     static gameH = 1280;
+    static isMenuPlayFirst = true; //меняю только в Menu
     
     // Данные игры
     static aColors = []; // массив с цветами

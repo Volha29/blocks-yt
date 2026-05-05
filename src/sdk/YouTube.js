@@ -2,8 +2,8 @@ export default class YouTube {
     constructor() {
         this.sdk = null;
         this.keyLocalStorage = 'ArripioTY25B'; //изменить, используя ID игры.
-        this.stepsToShowFullAdv = 120; //s
-        this.startICountStepsToShow = 120;  
+        this.stepsToShowFullAdv = 5; //s
+        this.startICountStepsToShow = 5;  
 
         this.isSoundYTPlay = true;      
         

@@ -107,7 +107,9 @@ export default class MenuScene extends BaseScene {
             });
         }
 
-        this.game.sdk.gameReady(); // <==== говорим YT, что игра загрузилась
-
+        if (Data.isMenuPlayFirst){
+            Data.isMenuPlayFirst = false;
+            this.game.sdk.gameReady(); // <==== говорим YT, что игра загрузилась
+        }
     }    
 }
