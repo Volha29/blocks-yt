@@ -280,6 +280,9 @@ export default class YouTube {
 
         // 4. Чистим ввод в сценах, чтобы не было "фантомных" нажатий после паузы
         this.game.scene.getScenes(false).forEach(scene => {
+            scene.scene.resume();       // Запускаем логику сцены (update, таймеры)
+            scene.input.enabled = true; // Включаем обратно возможность тащить блоки
+            // ------------------------------
             scene.input.resetPointers();            
         });
     }        

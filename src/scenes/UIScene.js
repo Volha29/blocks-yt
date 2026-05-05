@@ -257,7 +257,6 @@ export default class UIScene extends BaseScene {
         // --- ЛОГИКА КНОПОК ---
         btnNo.on('pointerdown', () => {
             this.sound.play('clickBtn');
-            this.game.yandex.startGameplay(); // Запускаем геймплей для Яндекса
             this.mainOverlay.alpha = 0;
             this.dialog.destroy(); // Просто удаляем окно
         });
