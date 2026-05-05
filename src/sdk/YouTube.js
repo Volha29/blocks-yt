@@ -199,9 +199,9 @@ export default class YouTube {
             this.pauseGame();
 
             // Проверяем наличие модуля рекламы (он может быть в ytgame.ads)
-            if (this.sdk.ads && typeof this.sdk.ads.showInterstitial === 'function') {
+            if (this.sdk.ads && typeof this.sdk.ads.requestInterstitialAd() === 'function') {
             
-                await this.sdk.ads.showInterstitial();
+                await this.sdk.ads.requestInterstitialAd();
             
                 // Если код дошел сюда — реклама закрыта или не показана
                 this.resumeGame();
