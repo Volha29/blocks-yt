@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Blocks variety of figures</title>
+        <script src="https://www.youtube.com/game_api/v1"></script>
+
+        <style>
+           @font-face {
+                font-family: 'EXO2'; /* Название для использования в JS */
+                src: url('assets/exo2.ttf') format('truetype'); /* Проверьте путь к файлу */
+            }  
+           
+            /* Reset CSS: Please avoid making changes here unless you know what you're doing :) */
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            html, body {
+                width: 100%;
+                height: 100%;
+
+                margin: 0; //добавила
+                padding: 0; //добавила
+    
+                overflow: hidden; /* Чтобы не было лишних скроллов браузера*/
+            }
+    
+            body {                
+                line-height: 1;
+                font-family: Verdana, Tahoma, Geneva, sans-serif;
+                background-color: #CCBCB2;
+            }
+
+            #game-container {
+                opacity: 0; /* Скрываем игру полностью */
+                background-color: transparent !important; /* Прозрачный контейнер */
+            
+                width: 100vw; //добавила
+                height: 100vh;//добавила
+                display: flex;//добавила
+                justify-content: center;//добавила
+                align-items: center;//добавила
+            }
+
+            canvas {
+                background-color: transparent !important; /* Прозрачный холст */
+                display: block;
+                touch-action: none; /* отключаем зум/скролл на мобильных */ 
+            }
+                
+            ol, ul {
+                list-style: none;
+            }
+    
+            img, video {
+                max-width: 100%;
+                height: auto;
+                display: block;
+            }
+    
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            /* 3. Скрытый элемент для гарантии подгрузки до старта Phaser */
+            .font-preloader {
+                position: absolute;
+                font-family: 'EXO2';
+                opacity: 0;
+                pointer-events: none;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <!-- Добавьте этот невидимый блок в начало body -->
+        <div class="font-preloader">.</div>
+
+        <div id="game-container"></div>
+        <script src="./phaser.min.js"></script>
+        <script type="module" src="./src/main.js"></script>        
+    </body>
+    </html>

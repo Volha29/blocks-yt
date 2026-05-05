@@ -1,0 +1,24 @@
+{
+  "ru": {
+    "score": "ВАШ РЕЗУЛЬТАТ:",
+    "best": "ВАШ ЛУЧШИЙ РЕЗУЛЬТАТ:",
+    "gameOver": "ИГРА ОКОНЧЕНА!",
+    "restart": "НАЧАТЬ НОВУЮ ИГРУ?",
+    "yes": "ДА",
+    "no": "НЕТ",
+    "newGame": "НОВАЯ ИГРА",
+    "noMoves": "БОЛЬШЕ ХОДОВ НЕТ",
+    "ok": "ДАЛЕЕ"
+  },
+  "en": {
+    "score": "YOUR SCORE:",
+    "best": "YOUR BEST SCORE:",
+    "gameOver": "GAME OVER!",
+    "restart": "START A NEW GAME?",
+    "yes": "YES",
+    "no": "NO",
+    "newGame": "NEW GAME",
+    "noMoves": "NO MOVES LEFT",
+    "ok": "OK"
+  }
+}
