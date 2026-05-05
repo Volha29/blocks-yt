@@ -150,7 +150,7 @@ export default class YouTube {
 
                 // 4. Отправляем лучший счет в систему YouTube
                 // Это заменяет лидерборды Яндекса для внутренних нужд площадки
-                this.sdk.game.sendScore({ value: this.playerData.bestScore });
+                this.sdk.engagement.sendScore({ value: this.playerData.bestScore });
             } catch (e) {
                 console.error("Ошибка облачного сохранения", e);
             }
@@ -254,6 +254,8 @@ export default class YouTube {
         // 3. Сбрасываем указатели во всех активных сценах
         this.game.scene.getScenes(true).forEach(scene => {
             scene.input.resetPointers();
+            scene.input.enabled = false; // Отключает возможность тащить блоки
+            scene.scene.pause();        // Замораживает логику самой сцены
         }); 
         // 4. Принудительно засыпаем Web Audio (важно для мобилок)
         if (this.game.sound.context && this.game.sound.context.state === 'running') {
