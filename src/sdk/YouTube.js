@@ -48,16 +48,13 @@ export default class YouTube {
 
             // 3. Тянем данные из облака Google/YouTube
             // Здесь используется метод loadData(), который возвращает строку
-            const rawCloudData = await this.sdk.system.loadData();           
+            const rawCloudData = await this.sdk.game.loadData();           
             
 
             if (rawCloudData) {
                 try {
-                    // 3. Если есть игрок, тянем данные из облака
-                    //const cloudData = await this.player.getData(); //<==
-                    const cloudData = JSON.parse(rawCloudData);
-                    // Сравниваем, где результат лучше (в облаке или локально)
-                    // Если в облаке данные есть, они приоритетнее для синхронизации
+                    const dataToParse = rawCloudData.data || rawCloudData;
+                    const cloudData = (typeof dataToParse === 'string') ? JSON.parse(dataToParse) : dataToParse;
                     this.playerData = { ...this.playerData, ...cloudData };
                 
                     // Сразу обновляем LocalStorage актуальными данными из облака
@@ -149,7 +146,7 @@ export default class YouTube {
                 const dataString = JSON.stringify(this.playerData);
                 
                 // Сохраняем в облако (аналог setData)
-                await this.sdk.system.saveData(dataString);
+                await this.sdk.game.saveData(dataString);
 
                 // 4. Отправляем лучший счет в систему YouTube
                 // Это заменяет лидерборды Яндекса для внутренних нужд площадки
