@@ -58,7 +58,7 @@ export default class YouTube {
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
                 console.log("YouTube изменил настройки звука:", isEnabled);
-                //this.isAudioYTPlay = isEnabled; <================== вернуть
+                this.isAudioYTPlay = isEnabled; 
                 this.updateAudioState();
             });
              
