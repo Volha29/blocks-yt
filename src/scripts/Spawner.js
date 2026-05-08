@@ -26,13 +26,10 @@ export default class Spawner {
     }
 
     checkFiguresCanPlace(){
-        //console.log(`checkFiguresCanPlace`); 
         let canPlace = false;
         for (let i = 0; i < 3; i++){
             const figure = this.aFigures[i];
-            // Проверяем, существует ли фигурка (не уничтожена ли она)
             if (figure && figure.active) {
-                // Вызываем метод префаба Figure.js
                 if (figure.checkCanPlace()) {
                     canPlace = true;
                 }  
@@ -51,7 +48,6 @@ export default class Spawner {
 
     saveFigures(){
         const data = this.scene.registry.get('playerData');
-        // Сохранение (автоматически создаст "2,3,4")
         data.numBlocksPlayer = Data.aType.slice(0, 3).join(',');// (не включая последний)
     }
 

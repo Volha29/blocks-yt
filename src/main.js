@@ -1,4 +1,5 @@
 import YouTube from './sdk/YouTube.js';
+import AudioManager from './scripts/AudioManager.js';
 import BootScene from './scenes/BootScene.js';
 import PreloaderScene from './scenes/PreloaderScene.js';
 import MenuScene from './scenes/MenuScene.js';
@@ -8,6 +9,7 @@ import GameOverScene from './scenes/GameOverScene.js';
 
 // Создаем один экземпляр сервиса на всю игру
 const sdk = new YouTube();
+const audio = new AudioManager();
 
 const config = {
     type: Phaser.AUTO,
@@ -42,6 +44,9 @@ const config = {
             // Сохраняем сервис в игру, чтобы достать его в любой
             //сцене через this.game.sdk
             game.sdk = sdk;
+
+            game.audio = audio;
+            audio.init(game);
         },
         postBoot: (game) => {
             // Создаем глобальный метод для перевода

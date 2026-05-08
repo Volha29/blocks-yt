@@ -44,6 +44,7 @@
         this.load.audio('clickBtn', 'assets/ButtonClick.mp3');      // Звук нажатия кнопки
         this.load.audio('clearLines', 'assets/ButtonClick.mp3');    // Звук удаления блоков
         this.load.audio('gameOver', 'assets/levelUp2.mp3');   // Звук проигрыша
+        this.load.audio('music', 'assets/music.mp3');
     
     }
     create() {

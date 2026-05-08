@@ -43,9 +43,7 @@ export default class UIScene extends BaseScene {
         this.score += scorePlus;
         this.scoreText.setText(this.score);
 
-        // Добавляем анимацию пульсации
-         
-
+        // Добавляем анимацию пульсации   
         if (this.score > this.bestScore) {
             this.bestScore = this.score;
             this.bestText.setText(this.bestScore);
@@ -60,7 +58,7 @@ export default class UIScene extends BaseScene {
                });
             }
         }
-            //this.saveGame();
+        
         // здесь только обновляем данные о скорости, но не еще не отправляем в Яндекс
         const data = this.registry.get('playerData');        
         data.score = this.score;
@@ -69,17 +67,12 @@ export default class UIScene extends BaseScene {
 
 
     createUI() {       
-
-        // 2. Создаем элементы. Координаты пока ставим 0, 
-        // так как метод onResizeCustom их сразу переставит.
-        
-        // Кнопка Home (слева сверху)        
-
         const { width, height } = this.scale.gameSize;
 
         this.homeBtn = this.add.image(20, 20, 'ui', 'home')
                 .setInteractive({ useHandCursor: true })
                 .setOrigin(0,0);
+
         this.addButtonEffects(this.homeBtn, () => {
             this.scene.stop('GameScene'); 
             this.scene.start('MenuScene');
@@ -93,11 +86,7 @@ export default class UIScene extends BaseScene {
             this.showRestartDialog();
         });
 
-        //Счетчики Score и BestScore
-        // 1. Достаем данные игрока из реестра (те, что загрузил Yandex SDK)
         const playerData = this.registry.get('playerData');
-    
-        // 2. Создаем локальные числовые переменные для удобства расчетов
         this.score = playerData.score; 
         this.bestScore = playerData.bestScore; 
 
@@ -121,11 +110,7 @@ export default class UIScene extends BaseScene {
             fill: '#a27071' 
         }).setOrigin(0.5);     
 
-        //this.bestText.setResolution(window.devicePixelRatio || 2); //<======
-
-        this.events.once('postupdate', () => {this.updateElementsPosition();});    
-       
-    
+         this.events.once('postupdate', () => { this.updateElementsPosition(); });         
     }
     
     //Переопределяем метод onResize из BaseScene
@@ -196,8 +181,7 @@ export default class UIScene extends BaseScene {
         dialogBg.fillRoundedRect(dialogX, dialogY, dialogW, dialogH, 30);
         this.dialog.add(dialogBg);
 
-        // 4. Текст вопроса (используем getText)
-                
+        // 4. Текст вопроса (используем getText)                
         const question = this.add.text(Data.gameW / 2, dialogY + 90, this.game.getText('restart'), {
             fontSize: '44px',//44
             fill: '#A66E6F',
@@ -256,13 +240,13 @@ export default class UIScene extends BaseScene {
 
         // --- ЛОГИКА КНОПОК ---
         btnNo.on('pointerdown', () => {
-            this.sound.play('clickBtn');
+            this.game.audio.playSound('clickBtn');
             this.mainOverlay.alpha = 0;
             this.dialog.destroy(); // Просто удаляем окно
         });
 
         btnYes.on('pointerdown', () => {
-            this.sound.play('clickBtn');
+            this.game.audio.playSound('clickBtn');
             this.gameScene.restartGame(); // Перезапустит вызов restarta
             this.mainOverlay.alpha = 0;
             this.dialog.destroy(); // Просто удаляем окно
@@ -318,7 +302,7 @@ export default class UIScene extends BaseScene {
 
         // Логика кнопки
         okBtn.on('pointerdown', () => {
-            this.sound.play('clickBtn');
+            this.game.audio.playSound('clickBtn');
         
             // Сначала закрываем UI и игру, потом открываем финал
             this.scene.stop('UIScene');
@@ -361,7 +345,7 @@ export default class UIScene extends BaseScene {
 
         // 3. При нажатии (Click)
         button.on('pointerdown', () => {
-            this.sound.play('clickBtn'); // Звук клика
+            this.game.audio.playSound('clickBtn'); // Звук клика
             // Эффект быстрой "пружинки"
             this.tweens.add({
                 targets: button,

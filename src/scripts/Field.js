@@ -120,7 +120,8 @@ export default class Field {
                 };
             }
         });
-        this.scene.sound.play('gameOver');
+        this.game.audio.playSound('gameOver');
+        //this.scene.sound.play('gameOver'); <==================================
         // Ждем, пока ВСЕ блоки закончат анимацию исчезновения
         if (promises.length > 0) {
             await Promise.all(promises);

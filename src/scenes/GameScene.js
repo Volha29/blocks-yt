@@ -66,7 +66,7 @@ export default class GameScene extends BaseScene {
             
             if (canPlace) {
                 this.game.sdk.showFullscreenAd(async () => {
-                    this.sound.play('clickBtn'); 
+                    this.game.audio.playSound('clickBtn'); 
                     this.isBoardLocked = true; // БЛОКИРУЕМ ВВОД
                     this.field.placeFigure();
                     this.events.emit('updateScore', Data.figures[Data.aType[Data.numMove]].count); 
@@ -98,14 +98,11 @@ export default class GameScene extends BaseScene {
                         figure.setDepth(2); 
                         Data.numMove = -1;
                         }
-                    });
-                
+                    });                
             }
             
         });
-    }    
-
-    
+    }      
 
 
 
@@ -132,12 +129,11 @@ export default class GameScene extends BaseScene {
     }
 
     saveGame(){
-        //console.log('Save');
         this.field.saveField();
         this.spawner.saveFigures();
         const data = this.registry.get('playerData'); 
         this.game.sdk.save(data); // единственное реальное сохранение в облако есть 
-        //еще сохранение в UIСцене - в gameOver();
+                                    //еще сохранение в UIСцене - в gameOver();
     }
 
     

@@ -13,7 +13,7 @@ export default class MenuScene extends BaseScene {
         const playBtn = this.add.image(Data.gameW/2, Data.gameH/2, 'ui', 'play')
             .setInteractive({ useHandCursor: true });
         
-        // 1. Анимация при наведении (Увеличение)
+        // 1. Анимация при наведении (Увеличение) 
         playBtn.on('pointerover', () => {
             this.tweens.add({
                 targets: playBtn,
@@ -36,7 +36,7 @@ export default class MenuScene extends BaseScene {
         // 3. Эффект нажатия (Смена цвета или «вдавливание»)
         playBtn.on('pointerdown', () => {
             playBtn.setTint(0xcccccc); // Затемняем кнопку
-            this.sound.play('clickBtn'); // Звук нажатия
+            this.game.audio.playSound('clickBtn'); // Звук нажатия
         
             // Маленький эффект «пружинки» при клике
             this.tweens.add({
@@ -56,34 +56,23 @@ export default class MenuScene extends BaseScene {
         // --- КНОПКА SOUND (Переключатель) ---
         const playerData = this.registry.get('playerData');
 
-        // 1. Узнаем желание игрока из сейва
         let playerWantsSound = (playerData.hasBeenSaved === 1);
-
-        // 3. Итоговое состояние кнопки при ЗАПУСКЕ сцены
-        // Кнопка показывает "sound", если ИГРОК хочет звук (даже если YT его сейчас блокирует)
-        // Это нужно, чтобы игрок видел свою настройку.
-        const soundBtn = this.add.image(Data.gameW / 2, Data.gameH / 2 + 250, 'ui',
+        this.game.audio.setSoundState(playerWantsSound);
+        const soundBtn = this.add.image(Data.gameW / 2 - 100, Data.gameH / 2 + 250, 'ui',
             playerWantsSound ? 'sound' : 'nosound')
             .setInteractive({ useHandCursor: true });
 
         soundBtn.on('pointerdown', () => {
             playerWantsSound = !playerWantsSound;
-            const soundValue = playerWantsSound ? 1 : 0;
 
             // Визуал кнопки всегда следует за пальцем игрока
             soundBtn.setFrame(playerWantsSound ? 'sound' : 'nosound');
 
             // Сохраняем желание игрока в реестр и в облако
-            playerData.hasBeenSaved = soundValue;
+            playerData.hasBeenSaved = playerWantsSound ? 1 : 0;
             this.registry.set('playerData', playerData);
-
-            // ВАЖНО: вызываем save. 
-            // Внутри твоего YouTube.js метод save вызовет updateAudioState, 
-            // который и установит финальный this.sound.mute!
-            this.game.sdk.save({ hasBeenSaved: soundValue });
-            
-            this.game.sdk.updateAudioState();
-
+            this.game.sdk.save({ hasBeenSaved: playerData.hasBeenSavede });            
+            this.game.audio.setSoundState(playerWantsSound);
             // Анимация
             this.tweens.add({
                 targets: soundBtn,
@@ -91,25 +80,43 @@ export default class MenuScene extends BaseScene {
                 duration: 50,
                 yoyo: true
             });
-
-            // Звуковой отклик: сработает только если mute в итоге стал false
-            //if (playerWantsSound)
-            this.sound.play('clickBtn');
+            this.game.audio.playSound('clickBtn');
         });
 
-        // 4. Добавляем "живое" обновление кнопки
-        if (this.game.sdk.sdk) {
-            this.game.sdk.sdk.system.onAudioEnabledChange((isEnabled) => {
-                // Если YouTube принудительно выключил звук на площадке, 
-                // мы можем сделать кнопку полупрозрачной (alpha 0.5), 
-                // но кадр (sound/nosound) пусть показывает желание игрока.
-             soundBtn.alpha = isEnabled ? 1 : 0.5;
+        // --- КНОПКА MUSIC (Переключатель) ---
+        let playerWantsMusic = (playerData.isMusicPlay === 1);
+        this.game.audio.setMusicState(playerWantsMusic);
+
+        const musicBtn = this.add.image(Data.gameW / 2 + 100, Data.gameH / 2 + 250, 'ui',
+            playerWantsMusic ? 'music' : 'nomusic')
+            .setInteractive({ useHandCursor: true });
+
+        musicBtn.on('pointerdown', () => {
+            playerWantsMusic = !playerWantsMusic;
+
+            // Визуал кнопки всегда следует за пальцем игрока
+            musicBtn.setFrame(playerWantsMusic ? 'music' : 'nomusic');
+
+            // Сохраняем желание игрока в реестр и в облако
+            playerData.isMusicPlay = playerWantsMusic ? 1 : 0;
+            this.registry.set('playerData', playerData);
+            this.game.sdk.save({ isMusicPlay: playerData.isMusicPlay });            
+            this.game.audio.setMusicState(playerWantsMusic);
+
+            // Анимация
+            this.tweens.add({
+                targets: musicBtn,
+                angle: playerWantsSound ? 10 : -10,
+                duration: 50,
+                yoyo: true
             });
-        }
+            this.game.audio.playSound('clickBtn');
+        });        
 
         if (Data.isMenuPlayFirst){
             Data.isMenuPlayFirst = false;
             this.game.sdk.gameReady(); // <==== говорим YT, что игра загрузилась
+            this.game.audio.startMusic('music');
         }
     }    
 }

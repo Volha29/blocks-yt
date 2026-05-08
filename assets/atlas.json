@@ -53,6 +53,18 @@
       "frame": { "x": 230, "y": 306, "w": 200, "h": 200 },
       "spriteSourceSize": { "x": 0, "y": 0, "w": 200, "h": 200 },
       "sourceSize": { "w": 200, "h": 200 }
+    },
+    {
+      "filename": "music",
+      "frame": { "x": 10, "y": 520, "w": 100, "h": 100 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+      "sourceSize": { "w": 100, "h": 100 }
+    },
+    {
+      "filename": "nomusic",
+      "frame": { "x": 120, "y": 520, "w": 100, "h": 100 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+      "sourceSize": { "w": 100, "h": 100 }
     }
   ],
   "meta": {
@@ -60,7 +72,7 @@
     "version": "1.0",
     "image": "atlas.png",
     "format": "RGBA8888",
-    "size": { "w": 512, "h": 512 },
+    "size": { "w": 512, "h": 1024 },
     "scale": "1"
   }
 }

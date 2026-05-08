@@ -10,12 +10,8 @@ export default class GameOverScene extends BaseScene {
     }
     
     create() {
-        //super.create(); 
-        
-         // <======Устанавливаем камеру в стандартный режим без зума
         this.cameras.main.setZoom(1);
         this.cameras.main.setScroll(0, 0);
-
 
         const playerData = this.registry.get('playerData');
 
@@ -25,8 +21,6 @@ export default class GameOverScene extends BaseScene {
         // 2. Центральная плашка
         const bgW = 550;
         const bgH = 550;
-        //const bgX = Data.gameW / 2 - bgW / 2;
-        //const bgY = Data.gameH / 2 - bgH / 2;
         const bgX = - bgW / 2;
         const bgY = - bgH / 2;
         
@@ -38,89 +32,49 @@ export default class GameOverScene extends BaseScene {
         
         const bestLabel = this.add.text(0, bgY + 90, this.game.getText('best'), {
             fontSize: '40px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#A66E6F',
-    // Настройки тени
-    shadow: {
-        offsetX: 2,      // смещение по горизонтали
-        offsetY: 2,      // смещение по вертикали
-        color: '#A66E6F', // цвет тени (можно сделать темнее основного или черным)
-        blur: 4,         // мягкость (чем больше, тем более гладкой кажется тень)
-        stroke: false,   // применять ли тень к обводке
-        fill: true       // применять ли тень к заливке букв
-    }
+            shadow: { offsetX: 2, offsetY: 2, color: '#A66E6F', blur: 4, stroke: false, fill: true }
         }).setOrigin(0.5).setResolution(2);
-
 
         const bestScore = this.add.text(0, bgY + 170, playerData.bestScore, {
             fontSize: '48px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#A66E6F',
-    // Настройки тени 
-    shadow: {
-        offsetX: 2,      // смещение по горизонтали
-        offsetY: 2,      // смещение по вертикали
-        color: '#A66E6F', // цвет тени (можно сделать темнее основного или черным)
-        blur: 4,         // мягкость (чем больше, тем более гладкой кажется тень)
-        stroke: false,   // применять ли тень к обводке
-        fill: true       // применять ли тень к заливке букв
-    }
+            shadow: { offsetX: 2, offsetY: 2, color: '#A66E6F', blur: 4, stroke: false, fill: true }
         }).setOrigin(0.5).setResolution(2);
 
         // 4. Текущий счет Data.gameW / 2
         const scoreLabel = this.add.text(0, bgY + 270, this.game.getText('score'), {
             fontSize: '40px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#E97E8E',
-    // Настройки тени
-    shadow: {
-        offsetX: 2,      // смещение по горизонтали
-        offsetY: 2,      // смещение по вертикали
-        color: '#E97E8E', // цвет тени (можно сделать темнее основного или черным)
-        blur: 4,         // мягкость (чем больше, тем более гладкой кажется тень)
-        stroke: false,   // применять ли тень к обводке
-        fill: true       // применять ли тень к заливке букв
-    }
+            shadow: { offsetX: 2, offsetY: 2, color: '#E97E8E', blur: 4, stroke: false, fill: true }
         }).setOrigin(0.5).setResolution(2);
 
         const scoreVal = this.add.text(0, bgY + 330, this.displayScore, {
             fontSize: '44px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#E97E8E',
-    // Настройки тени
-    shadow: {
-        offsetX: 2,      // смещение по горизонтали
-        offsetY: 2,      // смещение по вертикали
-        color: '#E97E8E', // цвет тени (можно сделать темнее основного или черным)
-        blur: 4,         // мягкость (чем больше, тем более гладкой кажется тень)
-        stroke: false,   // применять ли тень к обводке
-        fill: true       // применять ли тень к заливке букв
-    }
+            shadow: { offsetX: 2, offsetY: 2, color: '#E97E8E', blur: 4, stroke: false, fill: true }
         }).setOrigin(0.5).setResolution(2);
 
-
-        // 6. Кнопка RESTART (Основная) Data.gameW / 2
+        // 6. Кнопка RESTART (Основная)
         const restartBtn = this.add.image(0, bgY + 460, 'ui', 'reset')
             .setInteractive({ useHandCursor: true });
 
         // --- ЛОГИКА ---
 
         // Помечаем коллбэк как async, чтобы сервис Яндекса мог его корректно "подождать"
-    restartBtn.on('pointerdown', async () => {
-        this.sound.play('clickBtn');
+        restartBtn.on('pointerdown', async () => {
+            this.game.audio.playSound('clickBtn');
 
-        // Блокируем кнопку, чтобы игрок не нажал её 10 раз, пока ждет рекламу
-        restartBtn.disableInteractive();
+            // Блокируем кнопку, чтобы игрок не нажал её 10 раз, пока ждет рекламу
+            restartBtn.disableInteractive();
 
-        this.game.sdk.showFullscreenAd(async () => {
-            // Запускаем GameScene. Она сама остановит текущую сцену
-            this.scene.start('GameScene');
-        
-            // Если UIScene у вас запускается из GameScene через scene.launch(),
-            // то больше ничего делать не нужно.
+            this.game.sdk.showFullscreenAd(async () => {
+                // Запускаем GameScene. Она сама остановит текущую сцену
+                this.scene.start('GameScene');
+            });
         });
-    });
 
         
         //<=========== Добавим эффекты кнопкам (как мы делали раньше)
         this.addHoverEffect(restartBtn);
 
-        // Показываем рекламу сразу при входе (опционально)
-        // this.game.yandex.showFullscreenAd();
-
-            // Добавляем всё в контейнер
+        // Добавляем всё в контейнер
         this.container.add([bg, bestLabel, bestScore, scoreLabel, scoreVal, restartBtn]);
 
         // Позиционируем и подписываемся на ресайз
@@ -132,10 +86,6 @@ export default class GameOverScene extends BaseScene {
         this.events.once('shutdown', () => {
             this.scale.off('resize', this.updateElementsPosition, this);
         });
-
-
-
-
     }
 
     updateElementsPosition() {
@@ -150,12 +100,6 @@ export default class GameOverScene extends BaseScene {
         this.container.setPosition(width / 2, height / 2);
         this.container.setScale(scale);
     }
-
-
-
-
-
-
 
     addHoverEffect(btn) {
         btn.on('pointerover', () => btn.setScale(btn.scale * 1.1));

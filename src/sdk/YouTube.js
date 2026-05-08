@@ -5,75 +5,48 @@ export default class YouTube {
         this.stepsToShowFullAdv = 5; //s
         this.startICountStepsToShow = 5;  
 
-        this.isSoundYTPlay = true;      
+        this.isAudioYTPlay = true;      
         
         this.playerData = { // Дефолтная структура PlayerInfo
             score: 0,
             bestScore: 0,
             colorArray: "",
             numBlocksPlayer: "",
-            hasBeenSaved: 1
+            hasBeenSaved: 1,
+            isMusicPlay: 1
         };
     }
 
     async init(game) {
 
-        // Передаем ссылку на игру для управления паузой
         this.game = game; 
 
-        /* 1. Сначала ВСЕГДА загружаем данные из LocalStorage
-        const local = localStorage.getItem(this.keyLocalStorage);
-        if (local) {
-            try {
-                const localData = JSON.parse(local);
-                this.playerData = { ...this.playerData, ...localData };
-                console.log("Данные загружены из LocalStorage");
-            } catch (e) {
-                console.error("Ошибка парсинга LocalStorage", e);
-            }
-        }*/
-
-        // 2. Проверяем наличие скрипта SDK
         if (typeof window.ytgame === 'undefined') {
-            console.warn("ytgame SDK не найден. Работаем только с LocalStorage.");
-            // все равно надо настроить завук!
-            this.updateAudioState();
-
+            console.warn("ytgame SDK не найден. Работаем только с LocalStorage.");            
+            this.updateAudioState(); // все равно надо настроить звук!
             return this.playerData;
         }
 
         try {
-            //this.ysdk = await YaGames.init(); //<==
-            this.sdk = window.ytgame;
-
-            // 3. Тянем данные из облака Google/YouTube
-            // Здесь используется метод loadData(), который возвращает строку
-            const rawCloudData = await this.sdk.game.loadData();           
+            this.sdk = window.ytgame;const rawCloudData = await this.sdk.game.loadData();           
             
-
             if (rawCloudData) {
                 try {
                     const dataToParse = rawCloudData.data || rawCloudData;
                     const cloudData = (typeof dataToParse === 'string') ? JSON.parse(dataToParse) : dataToParse;
-                    this.playerData = { ...this.playerData, ...cloudData };
-                
-                    // Сразу обновляем LocalStorage актуальными данными из облака
-                    //localStorage.setItem('playerData', JSON.stringify(this.playerData));
+                    this.playerData = { ...this.playerData, ...cloudData };                
                     console.log("Данные синхронизированы с облаком YT");
                 } catch (parseError) {
                     console.error("Ошибка парсинга данных из облака YT", parseError);
                 }
             } 
 
-            // 1. Сначала ПРИНУДИТЕЛЬНО узнаем текущее состояние звука один раз при старте
-            this.isSoundYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;    
-            // Вызываем обновление, чтобы mute в Phaser стал true, если в сейвах 0
+            this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;    
+            console.log(`this.isAudioYTPlay= ${this.isAudioYTPlay}`)
             this.updateAudioState();
 
 
-            // 4. Настраиваем обязательные слушатели пауз YouTube
-            // В отличие от Яндекса, здесь методы называются onPause и onResume
-            this.sdk.system.onPause(() => {
+             this.sdk.system.onPause(() => {
                 console.log("YouTube подал сигнал: ПАУЗА");
                 this.pauseGame();
             });
@@ -85,7 +58,7 @@ export default class YouTube {
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
                 console.log("YouTube изменил настройки звука:", isEnabled);
-                this.isSoundYTPlay = isEnabled;
+                //this.isAudioYTPlay = isEnabled; <================== вернуть
                 this.updateAudioState();
             });
              
@@ -118,26 +91,16 @@ export default class YouTube {
 
     // Отдельный вспомогательный метод для синхронизации возможности воспроизведенеия звука
     updateAudioState() {
-        // 1. Узнаем, что выбрал сам игрок (из твоих playerData)
-        const userWantsSound = (this.playerData.hasBeenSaved === 1);
-        // 2. Итоговый mute = (YouTube запретил) ИЛИ (Пользователь запретил)
-        // Если ytAudioEnabled === false, то игра ОБЯЗАНА молчать
-        this.game.sound.mute = !(this.isSoundYTPlay && userWantsSound);
+        this.game.sound.mute = !(this.isAudioYTPlay);
+        this.game.audio.playMusic();
     }
-
+ 
+    
 
     // вызов, обращение: this.game.yandex.save({ score: 100, bestScore: 500 });
     async save(newData) {
         // 1. Обновляем локальный объект данных в памяти
         this.playerData = { ...this.playerData, ...newData };
-
-        /* 2. ВСЕГДА сохраняем в LocalStorage (основная точка правды)
-        try {
-            localStorage.setItem(this.keyLocalStorage, JSON.stringify(this.playerData));
-            console.log("Данные сохранены локально");
-        } catch (e) {
-            console.error("Ошибка записи в LocalStorage", e);
-        }*/
 
         // 3. Если SDK YouTube доступен — сохраняем в облако Google
         if (this.sdk) {
@@ -275,8 +238,8 @@ export default class YouTube {
         }         
         // 3. Используем наш п.2 для проверки звука!
         // Сами спрашиваем SDK текущее состояние и сверяем с желанием игрока
-        const currentYTState = this.sdk ? this.sdk.system.isAudioEnabled() : true;
-        this.updateAudioState(currentYTState);
+        this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
+        this.updateAudioState();
 
         // 4. Чистим ввод в сценах, чтобы не было "фантомных" нажатий после паузы
         this.game.scene.getScenes(false).forEach(scene => {
