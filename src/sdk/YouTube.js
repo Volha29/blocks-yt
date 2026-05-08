@@ -161,21 +161,18 @@ export default class YouTube {
             // Мы сами вызываем паузу ПЕРЕД вызовом рекламы
             this.pauseGame();
 
-            // Проверяем наличие модуля рекламы (он может быть в ytgame.ads)
-            if (this.sdk.ads && typeof this.sdk.ads.requestInterstitialAd() === 'function') {
-            
+            if (this.sdk?.ads?.requestInterstitialAd) {
                 await this.sdk.ads.requestInterstitialAd();
-            
-                // Если код дошел сюда — реклама закрыта или не показана
+                // Реклама показана и закрыта — возобновляем игру
                 this.resumeGame();
                 await finalCallback();
-            
             } else {
-                // Если метода рекламы нет в SDK (бывает на этапе тестов)
-                console.warn("Метод showInterstitial не найден в SDK");
+            // Метод отсутствует (например, в тестовой среде)
+                console.warn("Метод requestInterstitialAd не найден в SDK");
                 this.resumeGame();
                 await finalCallback();
-            }
+            }           
+            
         } catch (error) {
             console.error("Ошибка при показе рекламы YouTube:", error);
             this.resumeGame();
