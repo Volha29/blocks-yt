@@ -2,8 +2,9 @@ import Data from '../data/Data.js';
 import Block from '../prefabs/Block.js';
 
 export default class Field {
-    constructor(scene) {
+    constructor(scene, game) {
         this.scene = scene; // Ссылка на GameScene
+        this.game = game;
         this.aBlocks = [];
         this.row;
         this.col;
@@ -120,7 +121,7 @@ export default class Field {
                 };
             }
         });
-        this.scene.game.audio.playSound('gameOver');
+       this.game.audio.playSound('gameOver');
         //this.scene.sound.play('gameOver'); <==================================
         // Ждем, пока ВСЕ блоки закончат анимацию исчезновения
         if (promises.length > 0) {

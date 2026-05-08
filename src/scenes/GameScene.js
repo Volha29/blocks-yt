@@ -14,7 +14,7 @@ export default class GameScene extends BaseScene {
         super.create();
         this.scene.launch('UIScene');
 
-        this.field = new Field(this);
+        this.field = new Field(this, this.game);
         this.spawner = new Spawner(this);
         this.shadow = new Shadow(this);
 
