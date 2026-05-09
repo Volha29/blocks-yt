@@ -2,7 +2,7 @@ export default class AudioManager {
     constructor() {
         this.game = null;
         this.bgMusic = null;
-        this.musicVolume = 0.4;
+        this.musicVolume = 1.0;
         this.soundVolume = 1.0;
         this.isSoundPlay = true;
         this.isMusicPlay = true;
