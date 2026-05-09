@@ -8,58 +8,39 @@ export default class UIScene extends BaseScene {
 
     create() {
         super.create();
-        
-        // 1. Получаем ссылку на главную игру, чтобы слушать её события
         this.gameScene = this.scene.get('GameScene'); 
         this.score = 0;
         this.bestScore = 0;       
         this.lang = this.cache.json.get('lang')[this.registry.get('lang')];
         this.zoom = 1;
-
-
         this.mainOverlay = this.add.graphics();
         this.mainOverlay.fillStyle(0x000000, 0.7);
-        this.mainOverlay.alpha = 0; // Скрыт по умолчанию
+        this.mainOverlay.alpha = 0;
         this.mainOverlay.setInteractive(new Phaser.Geom.Rectangle(0, 0, 1, 1), Phaser.Geom.Rectangle.Contains);
-            
-        // 2. Отрисовываем всё, что раньше было в GameScene (Кнопки, Счётчики)
         this.createUI();
-
-        // 3. ПОДПИСКА НА СОБЫТИЯ: Когда в игре что-то меняется, UI реагирует
-        this.gameScene.events.on('updateScore', this.updateScore, this);  
-
-        this.gameScene.events.once('showNoMoves', () => { this.gameOver(); }, this);       
-
-        // Главное: отписываемся при закрытии сцены
+        this.gameScene.events.on('updateScore', this.updateScore, this); 
+        this.gameScene.events.once('showNoMoves', () => { this.gameOver(); }, this); 
         this.events.once('shutdown', () => {
             this.gameScene.events.off('updateScore', this.updateScore, this);
         });
-
-    }    
-
-
+    } 
     updateScore(scorePlus) { 
         const playAnim = this.score < this.bestScore && scorePlus > 0;
         this.score += scorePlus;
         this.scoreText.setText(this.score);
-
-        // Добавляем анимацию пульсации   
         if (this.score > this.bestScore) {
             this.bestScore = this.score;
             this.bestText.setText(this.bestScore);
-
             if (playAnim){
                 this.tweens.add({
                     targets: this.bestText,
-                    scale: 1.1,          // Увеличиваем на 20%
-                    duration: 150,       // Время "взлета"
-                    yoyo: true,          // Возврат обратно
-                    ease: 'Sine.easeInOut' // Мягкий эффект отскока
+                    scale: 1.1, 
+                    duration: 150, 
+                    yoyo: true, 
+                    ease: 'Sine.easeInOut' 
                });
             }
         }
-        
-        // здесь только обновляем данные о скорости, но не еще не отправляем в Яндекс
         const data = this.registry.get('playerData');        
         data.score = this.score;
         data.bestScore = this.bestScore;
@@ -68,88 +49,61 @@ export default class UIScene extends BaseScene {
 
     createUI() {       
         const { width, height } = this.scale.gameSize;
-
         this.homeBtn = this.add.image(20, 20, 'ui', 'home')
                 .setInteractive({ useHandCursor: true })
                 .setOrigin(0,0);
-
         this.addButtonEffects(this.homeBtn, () => {
             this.scene.stop('GameScene'); 
             this.scene.start('MenuScene');
         });
-
-        // Кнопка Reset (справа)
         this.resetBtn = this.add.image(0, 0, 'ui', 'reset')
             .setInteractive({ useHandCursor: true })
             .setOrigin(1,0);
         this.addButtonEffects(this.resetBtn, () => {
             this.showRestartDialog();
         });
-
         const playerData = this.registry.get('playerData');
         this.score = playerData.score; 
         this.bestScore = playerData.bestScore; 
-
-        // 3. Создаем визуальные объекты и сохраняем ссылки на них в this
         this.scoreText = this.add.text(Data.gameW / 2, 120, `${this.score}`, { 
             fontSize: '48px',
             fontFamily: 'EXO2',            
             fontStyle: 'bold', 
             fill: '#e97e8e' 
         }).setOrigin(0.5);
-        this.scoreText.setResolution(window.devicePixelRatio || 2); //<======
-
+        this.scoreText.setResolution(window.devicePixelRatio || 2); 
         this.scoreLine = this.add.graphics()
             .fillStyle(0xb79395, 1)
             .fillRoundedRect(Data.gameW / 2 - 130, 85, 260, 7, 4);
-
         this.bestText = this.add.text(Data.gameW / 2, 60, `${this.bestScore}`, { 
             fontSize: '48px',
             fontFamily: 'EXO2',                           
             fontStyle: 'bold',
             fill: '#a27071' 
-        }).setOrigin(0.5);     
-
-         this.events.once('postupdate', () => { this.updateElementsPosition(); });         
+        }).setOrigin(0.5);  
+        this.events.once('postupdate', () => { this.updateElementsPosition(); });         
     }
-    
-    //Переопределяем метод onResize из BaseScene
     onResize() {
-        // Вызываем базовый ресайз (если нужен зум для UI, но обычно в UI важнее позиция)
         super.onResize();
-        this.updateElementsPosition();
-        //this.events.once('postupdate', () => {this.updateElementsPosition();});
+        this.updateElementsPosition();        
     }
-
-
     updateElementsPosition() {
-
-        // ПРОВЕРКА: если сцена выключается, системы input или камеры уже может не быть
         if (!this.scene.isActive() || !this.cameras || !this.cameras.main) {
             return;
         }       
-        super.onResize(); // Получаем актуальный zoom в BaseScene
+        super.onResize();
         const cam = this.cameras.main;
-        this.zoom = this.currentZoom; // Берем из BaseScene
-        // РУЧНОЙ РАСЧЕТ ГРАНИЦ (заменяет worldView на старте)
-        // Исходим из того, что камера центрирована на 720/2, 1280/2
+        this.zoom = this.currentZoom;
         const centerX = 720 / 2;
         const centerY = 1280 / 2;
-    
-        // Вычисляем, сколько игровых единиц помещается в текущем окне при данном зуме
         const halfWidthInWorld = (this.scale.width / 2) / this.zoom;
         const halfHeightInWorld = (this.scale.height / 2) / this.zoom;
-
         const left = centerX - halfWidthInWorld;
         const right = centerX + halfWidthInWorld;
         const top = centerY - halfHeightInWorld;
-
-        const margin = 20;// / zoom; // Визуально одинаковый отступ
-
+        const margin = 20;
         if (this.homeBtn) this.homeBtn.setPosition(left + margin, top + margin);
         if (this.resetBtn) this.resetBtn.setPosition(right - margin, top + margin);
-    
-        // Для оверлея используем те же рассчитанные границы
         if (this.mainOverlay) {
             const width = halfWidthInWorld * 2;
             const height = halfHeightInWorld * 2;
@@ -157,132 +111,79 @@ export default class UIScene extends BaseScene {
             if (this.mainOverlay.input) {
                 this.mainOverlay.input.hitArea.setTo(left, top, width, height);
             }
-        }      
+        }  
+    }   
 
-    }
-    
-
-    showRestartDialog() {        
-        // 1. Создаем группу (контейнер), чтобы управлять всем окном сразу
+    showRestartDialog() { 
         this.dialog = this.add.container(0, 0).setDepth(100);
-
-        // 2. Затемнение заднего фона (Overlay)
         this.mainOverlay.alpha = 1;
         this.mainOverlay.setDepth(10);
-        this.updateElementsPosition(); //<======
-
-        // 3. Сама плашка окна
+        this.updateElementsPosition();
         const dialogBg = this.add.graphics();
-        dialogBg.fillStyle(0xefe9e6, 1); // Белая подложка
+        dialogBg.fillStyle(0xefe9e6, 1);
         const dialogW = 550;
         const dialogH = 300;
         const dialogX = Data.gameW / 2 - dialogW / 2;
         const dialogY = Data.gameH / 2 - dialogH / 2;
         dialogBg.fillRoundedRect(dialogX, dialogY, dialogW, dialogH, 30);
-        this.dialog.add(dialogBg);
-
-        // 4. Текст вопроса (используем getText)                
+        this.dialog.add(dialogBg);               
         const question = this.add.text(Data.gameW / 2, dialogY + 90, this.game.getText('restart'), {
-            fontSize: '44px',//44
+            fontSize: '44px',
             fill: '#A66E6F',
-            fontStyle: '600', // Аналог Semi-Bold'bold',
+            fontStyle: '600',
             align: 'center',
-            fontFamily: 'EXO2',// Настройки тени
-            shadow: {
-                offsetX: 2,      // смещение по горизонтали
-                offsetY: 2,      // смещение по вертикали
-                color: '#A66E6F', // цвет тени (можно сделать темнее основного или черным)
-                blur: 4,         // мягкость (чем больше, тем более гладкой кажется тень)
-                stroke: false,   // применять ли тень к обводке
-                fill: true       // применять ли тень к заливке букв
-            },
+            fontFamily: 'EXO2',
+            shadow: { offsetX: 2, offsetY: 2, color: '#A66E6F', blur: 4,
+                stroke: false, fill: true},
             wordWrap: { width: 500 }
         }).setOrigin(0.5);
         this.dialog.add(question);
-       
-        
-        // 5. Кнопка "НЕТ"
         const btnNo = this.add.text(Data.gameW / 2 - 100, dialogY + 210, this.game.getText('no'), {
             fontSize: '40px', fontFamily: 'EXO2', fill: '#666', fontStyle: 'bold',
-            // Настройки тени
-            shadow: {
-                offsetX: 2,      // смещение по горизонтали
-                offsetY: 2,      // смещение по вертикали
-                color: '#666', // цвет тени (можно сделать темнее основного или черным)
-                blur: 4,         // мягкость (чем больше, тем более гладкой кажется тень)
-                stroke: false,   // применять ли тень к обводке
-                fill: true       // применять ли тень к заливке букв
-            }
+            shadow: { offsetX: 2,offsetY: 2,color: '#666',blur: 4,stroke: false,fill: true}
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
-        // 6. Кнопка "ДА"
         const btnYes = this.add.text(Data.gameW / 2 + 100, dialogY + 210, this.game.getText('yes'), {
             fontSize: '40px', fontFamily: 'EXO2', fill: '#A66E6F', fontStyle: 'bold',
-            shadow: {
-                offsetX: 2,      // смещение по горизонтали
-                offsetY: 2,      // смещение по вертикали
-                color: '#A66E6F', // цвет тени (можно сделать темнее основного или черным)
-                blur: 4,         // мягкость (чем больше, тем более гладкой кажется тень)
-                stroke: false,   // применять ли тень к обводке
-                fill: true       // применять ли тень к заливке букв
-            },
+            shadow: {offsetX: 2,offsetY: 2,color: '#A66E6F',blur: 4,stroke: false,fill: true},
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
         this.dialog.add([btnNo, btnYes]);
-
-        // --- АНИМАЦИЯ ПОЯВЛЕНИЯ ---
         this.dialog.setAlpha(0);
         this.tweens.add({
             targets: this.dialog,
             alpha: 1,
             duration: 200
         });
-
-        // --- ЛОГИКА КНОПОК ---
         btnNo.on('pointerdown', () => {
             this.game.audio.playSound('clickBtn');
             this.mainOverlay.alpha = 0;
-            this.dialog.destroy(); // Просто удаляем окно
+            this.dialog.destroy();
         });
 
         btnYes.on('pointerdown', () => {
             this.game.audio.playSound('clickBtn');
-            this.gameScene.restartGame(); // Перезапустит вызов restarta
+            this.gameScene.restartGame();
             this.mainOverlay.alpha = 0;
-            this.dialog.destroy(); // Просто удаляем окно
+            this.dialog.destroy();
             this.score = 0;
             this.scoreText.setText(this.score);
         });
-
-        // Добавим легкое масштабирование при наведении
         [btnNo, btnYes].forEach(btn => {
             btn.on('pointerover', () => btn.setScale(1.1));
             btn.on('pointerout', () => btn.setScale(1));
         });
     }
-
-    // если ходов больше нет
     gameOver() {
         this.sound.play('clickBtn');
-        const finalScore = this.score; // Сохраняем для показа
+        const finalScore = this.score;
         const data = this.registry.get('playerData');
-
-        // Обнуляем данные вPlayerData (для следующего захода в игру)
         data.score = 0;
-        data.colorArray = ""; // Очищаем сохраненное поле
-        data.numBlocksPlayer = ""; // Очищаем фигуры игрока
-    
-        // Сохраняем в Яндекс/LocalStorage
-        this.game.sdk.save(data);  
-    
-        // Создаем контейнер
+        data.colorArray = "";
+        data.numBlocksPlayer = "";
+        this.game.sdk.save(data); 
         const popup = this.add.container(0, 0).setDepth(2000);
-
         this.mainOverlay.alpha = 1;
         this.mainOverlay.setDepth(10);
-        this.updateElementsPosition(); //<======        
-
-        // 2. Текст
+        this.updateElementsPosition(); 
         const title = this.add.text(Data.gameW / 2, Data.gameH / 2 - 60,
                     this.game.getText('noMoves'), {
            fontSize: '48px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#A66E6F',
@@ -295,45 +196,31 @@ export default class UIScene extends BaseScene {
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
         popup.add([title, okBtn]);
-
-        // Анимация появления
         popup.setAlpha(0);
         this.tweens.add({ targets: popup, alpha: 1, duration: 300 });
-
-        // Логика кнопки
         okBtn.on('pointerdown', () => {
             this.game.audio.playSound('clickBtn');
-        
-            // Сначала закрываем UI и игру, потом открываем финал
             this.scene.stop('UIScene');
             this.scene.stop('GameScene');
             this.scene.start('GameOverScene', { finalScore: finalScore });
         });
-
-        // Эффект для кнопки
         okBtn.on('pointerover', () => okBtn.setScale(1.1));
         okBtn.on('pointerout', () => okBtn.setScale(1));
     }
 
     showRestartAlert() {
         this.mainOverlay.alpha = 1;
-        this.mainOverlay.setDepth(10); // Чтобы был над кнопками
+        this.mainOverlay.setDepth(10);
     }
-
-
-    // Универсальная функция для анимации кнопок
     addButtonEffects(button, callback) {
-        // 1. При наведении (Hover) — небольшое уменьшение и затемнение
         button.on('pointerover', () => {
             this.tweens.add({
                 targets: button,
-                scale: 0.9,      // Уменьшаем
-                alpha: 0.8,      // Затемняем (прозрачность)
+                scale: 0.9,
+                alpha: 0.8,
                 duration: 100
             });
         });
-
-        // 2. При уводе мыши — возврат в исходное состояние
         button.on('pointerout', () => {
             this.tweens.add({
                 targets: button,
@@ -342,11 +229,8 @@ export default class UIScene extends BaseScene {
                 duration: 100
             });
         });
-
-        // 3. При нажатии (Click)
         button.on('pointerdown', () => {
-            this.game.audio.playSound('clickBtn'); // Звук клика
-            // Эффект быстрой "пружинки"
+            this.game.audio.playSound('clickBtn');
             this.tweens.add({
                 targets: button,
                 scale: 0.8,

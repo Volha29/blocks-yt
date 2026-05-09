@@ -13,74 +13,54 @@ export default class GameScene extends BaseScene {
     create() {         
         super.create();
         this.scene.launch('UIScene');
-
         this.field = new Field(this, this.game);
         this.spawner = new Spawner(this);
         this.shadow = new Shadow(this);
-
         this.isBoardLocked = false;
         this.initInputHandlers();
         this.loadGame();           
     }  
 
 
-    initInputHandlers(){
-        // 1. Событие: Взяли фигурку          
+    initInputHandlers(){     
         this.input.on('dragstart', (pointer, figure) => {
             Data.numMove = figure.place;
-
-            // Если поле заблокировано (идет анимация), возвращаем фигурку назад
             if (this.isBoardLocked) {
-                pointer.setDragState(0); // Останавливаем перетаскивание
-                figure.x = Data.placeX[Data.numMove]; // Мгновенно возвращаем в слот
+                pointer.setDragState(0);
+                figure.x = Data.placeX[Data.numMove];
                 figure.y = Data.placeY;
                 figure.setScale(Data.scaleStart);
                 return;
             } 
-            figure.setDepth(100); // Выше всех
+            figure.setDepth(100);
             this.shadow.create();
-            // Анимация: Увеличение до 1 и "подпрыгивание" выше пальца
             this.tweens.add({
                 targets: figure,
                 scale: 1, 
-                y: figure.y - 100, // Смещение вверх на 100px, чтобы палец не закрывал
+                y: figure.y - 100,
                 duration: 100
             });
         });
-
-        // 2. Событие: Тащим фигурку
         this.input.on('drag', (pointer, figure, dragX, dragY) => {
-            // Привязываем фигурку к пальцу, но с учетом смещения вверх
             figure.x = dragX;
             figure.y = dragY - 100;
-
-            // вызов отрисовки тени над полем
             this.shadow.show(figure.x,figure.y); 
         });
-
-        // 3. Событие: Отпустили фигурку
-        this.input.on('dragend', async (pointer, figure) => {           
-            
+        this.input.on('dragend', async (pointer, figure) => { 
             const canPlace = this.field.checkCanPlace (figure.x, figure.y);      
             this.shadow.hide();
-            
             if (canPlace) {
                 this.game.sdk.showFullscreenAd(async () => {
                     this.game.audio.playSound('clickBtn'); 
-                    this.isBoardLocked = true; // БЛОКИРУЕМ ВВОД
+                    this.isBoardLocked = true;
                     this.field.placeFigure();
                     this.events.emit('updateScore', Data.figures[Data.aType[Data.numMove]].count); 
                     figure.destroy();
                     this.spawner.figureDestroy();
-                
-                    // 2. Ждем удаления линий (теперь через await)
-                    const scorePlus = await this.field.checkLines(); 
-
-                    // 3. Начисляем очки                
-                    if (scorePlus>0) this.events.emit('updateScore', scorePlus); // Посылаем сигнал в UIScene
-                    this.isBoardLocked = false; // РАЗБЛОКИРУЕМ ВВОД
-                    this.spawner.spawnNextFigure(Data.numMove);
-                
+                    const scorePlus = await this.field.checkLines();
+                    if (scorePlus>0) this.events.emit('updateScore', scorePlus); 
+                    this.isBoardLocked = false; 
+                    this.spawner.spawnNextFigure(Data.numMove);                
                     if (!this.spawner.checkFiguresCanPlace()) { this.gameOver();}
                     else {this.saveGame();}
                 });
@@ -93,18 +73,15 @@ export default class GameScene extends BaseScene {
                     y: Data.placeY,
                     scale: Data.scaleStart,
                     duration: 200,
-                    ease: 'Back.easeOut', // Эффект пружинки при возврате
+                    ease: 'Back.easeOut',
                     onComplete: () => { 
                         figure.setDepth(2); 
                         Data.numMove = -1;
                         }
                     });                
-            }
-            
+            }            
         });
-    }      
-
-
+    }     
 
     loadGame(){ 
        for (let r = 0; r < Data.gridSize; r++){
@@ -116,7 +93,6 @@ export default class GameScene extends BaseScene {
         this.field.loadField();
         this.spawner.loadFigures();
     }
-
 
     restartGame(){
         const data = this.registry.get('playerData'); 
@@ -132,14 +108,10 @@ export default class GameScene extends BaseScene {
         this.field.saveField();
         this.spawner.saveFigures();
         const data = this.registry.get('playerData'); 
-        this.game.sdk.save(data); // единственное реальное сохранение в облако есть 
-                                    //еще сохранение в UIСцене - в gameOver();
+        this.game.sdk.save(data);
     }
 
     
-    gameOver() { 
-        this.events.emit('showNoMoves'); // Посылаем сигнал в UIScene        
-    }  
-    
+    gameOver() { this.events.emit('showNoMoves'); }   
 
 }

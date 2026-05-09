@@ -4,13 +4,11 @@ import Figure from '../prefabs/Figure.js';
 export default class Spawner {
     constructor(scene) {
         this.scene = scene;
-        this.aFigures = [null, null, null]; // Три фигуры, доступные игроку GO
+        this.aFigures = [null, null, null];
         this.drawPlaces();
     }
     
-    figureDestroy(){
-        this.aFigures [Data.numMove] = null;
-    }
+    figureDestroy(){ this.aFigures [Data.numMove] = null; }
 
     spawnNextFigure(numPlace){
         let num;
@@ -36,25 +34,19 @@ export default class Spawner {
             }
         }
         return canPlace;    
-    }
-
-
-    
+    }    
     spawn(numType, numPlace) { // i = type of Figure, k - num of Place
         this.aFigures [numPlace] = new Figure(this.scene, numPlace, Data.figures[numType],
             Data.colors[Data.figures[numType].count].color);
     }
-
-
     saveFigures(){
         const data = this.scene.registry.get('playerData');
-        data.numBlocksPlayer = Data.aType.slice(0, 3).join(',');// (не включая последний)
+        data.numBlocksPlayer = Data.aType.slice(0, 3).join(',');
     }
 
     loadFigures(){
         const data = this.scene.registry.get('playerData');        
-        let line = data.numBlocksPlayer; // Строка с запятой на конце
-
+        let line = data.numBlocksPlayer;
         if (!line || line.length === 0) 
             {
                 for (let numPlace = 0; numPlace < 3; numPlace++){
@@ -62,9 +54,9 @@ export default class Spawner {
                    }
             } else {                           
                 const numbers = line
-                    .split(',')       // ["2", "3", "4", ""]
-                    .filter(Boolean)  // ["2", "3", "4"] (удаляет пустую строку)
-                    .map(Number);     // [2, 3, 4] (превращает в числа)
+                    .split(',') 
+                    .filter(Boolean)
+                    .map(Number); 
         
                 for (let numPlace = 0; numPlace < 3; numPlace++){
                     Data.aType[numPlace] = (numbers[numPlace] !== undefined) ? numbers[numPlace] : Phaser.Math.Between(0, Data.figures.length - 1);
@@ -73,8 +65,6 @@ export default class Spawner {
             }
         this.checkFiguresCanPlace();
     }
-
-
     resetFigures(){
         for (let i = 0; i < 3; i++) {
             if (this.aFigures[i] !== null){
@@ -84,13 +74,9 @@ export default class Spawner {
          }
         this.loadFigures();
     }
-
-
-
     drawPlaces(){ 
         for (let i = 0; i < 3; i++) {
             const place = this.scene.add.image(Data.placeX[i], Data.placeY, 'ui', 'place');
-            //place.setDepth(1); 
         }        
     }
 }

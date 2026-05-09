@@ -5,31 +5,21 @@ export default class GameOverScene extends BaseScene {
     constructor() { super('GameOverScene'); }    
     
     init(data) {
-        // Получаем переданный счет
         this.displayScore = data.finalScore || 0;
     }
     
     create() {
         this.cameras.main.setZoom(1);
         this.cameras.main.setScroll(0, 0);
-
         const playerData = this.registry.get('playerData');
-
-        // Создаем контейнер, в котором будем собирать окно
         this.container = this.add.container(0, 0);
-
-        // 2. Центральная плашка
         const bgW = 550;
         const bgH = 550;
         const bgX = - bgW / 2;
-        const bgY = - bgH / 2;
-        
+        const bgY = - bgH / 2;        
         const bg = this.add.graphics();
         bg.fillStyle(0xefe9e6, 1);
         bg.fillRoundedRect(bgX, bgY, bgW, bgH, 40);
-
-        // 5. Лучший результат 
-        
         const bestLabel = this.add.text(0, bgY + 90, this.game.getText('best'), {
             fontSize: '40px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#A66E6F',
             shadow: { offsetX: 2, offsetY: 2, color: '#A66E6F', blur: 4, stroke: false, fill: true }
@@ -40,7 +30,6 @@ export default class GameOverScene extends BaseScene {
             shadow: { offsetX: 2, offsetY: 2, color: '#A66E6F', blur: 4, stroke: false, fill: true }
         }).setOrigin(0.5).setResolution(2);
 
-        // 4. Текущий счет Data.gameW / 2
         const scoreLabel = this.add.text(0, bgY + 270, this.game.getText('score'), {
             fontSize: '40px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#E97E8E',
             shadow: { offsetX: 2, offsetY: 2, color: '#E97E8E', blur: 4, stroke: false, fill: true }
@@ -50,39 +39,21 @@ export default class GameOverScene extends BaseScene {
             fontSize: '44px', fontFamily: 'EXO2', fontStyle: 'bold', fill: '#E97E8E',
             shadow: { offsetX: 2, offsetY: 2, color: '#E97E8E', blur: 4, stroke: false, fill: true }
         }).setOrigin(0.5).setResolution(2);
-
-        // 6. Кнопка RESTART (Основная)
+        
         const restartBtn = this.add.image(0, bgY + 460, 'ui', 'reset')
             .setInteractive({ useHandCursor: true });
 
-        // --- ЛОГИКА ---
-
-        // Помечаем коллбэк как async, чтобы сервис Яндекса мог его корректно "подождать"
         restartBtn.on('pointerdown', async () => {
             this.game.audio.playSound('clickBtn');
-
-            // Блокируем кнопку, чтобы игрок не нажал её 10 раз, пока ждет рекламу
             restartBtn.disableInteractive();
-
             this.game.sdk.showFullscreenAd(async () => {
-                // Запускаем GameScene. Она сама остановит текущую сцену
                 this.scene.start('GameScene');
             });
         });
-
-        
-        //<=========== Добавим эффекты кнопкам (как мы делали раньше)
         this.addHoverEffect(restartBtn);
-
-        // Добавляем всё в контейнер
         this.container.add([bg, bestLabel, bestScore, scoreLabel, scoreVal, restartBtn]);
-
-        // Позиционируем и подписываемся на ресайз
-        //this.updateElementsPosition();
         this.events.once('postupdate', () => {this.updateElementsPosition();});
         this.scale.on('resize', this.updateElementsPosition, this);
-        
-        // Отписка при закрытии сцены
         this.events.once('shutdown', () => {
             this.scale.off('resize', this.updateElementsPosition, this);
         });
@@ -90,13 +61,8 @@ export default class GameOverScene extends BaseScene {
 
     updateElementsPosition() {
         if (!this.scene.isActive() || !this.container) return;
-
         const { width, height } = this.scale.displaySize;
-
-        // Вычисляем масштаб интерфейса (как в UIScene)
         const scale = Math.min(width / Data.gameW, height / Data.gameH);
-
-        // Ставим контейнер ровно по центру экрана
         this.container.setPosition(width / 2, height / 2);
         this.container.setScale(scale);
     }
