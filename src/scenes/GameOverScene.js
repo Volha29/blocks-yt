@@ -46,6 +46,7 @@ export default class GameOverScene extends BaseScene {
         restartBtn.on('pointerdown', async () => {
             this.game.audio.playSound('clickBtn');
             restartBtn.disableInteractive();
+            this.game.sdk.setFullScreenSteps(0);
             this.game.sdk.showFullscreenAd(async () => {
                 this.scene.start('GameScene');
             });

@@ -84,6 +84,7 @@ export default class GameScene extends BaseScene {
     }     
 
     loadGame(){ 
+       this.game.sdk.setFullScreenSteps(120);
        for (let r = 0; r < Data.gridSize; r++){
             Data.aColors [r] = [];
             for (let c = 0; c < Data.gridSize; c++){
@@ -95,6 +96,7 @@ export default class GameScene extends BaseScene {
     }
 
     restartGame(){
+        this.game.sdk.setFullScreenSteps(120);
         const data = this.registry.get('playerData'); 
         data.score = 0;
         data.colorArray ="";

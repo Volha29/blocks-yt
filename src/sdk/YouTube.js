@@ -1,4 +1,4 @@
-export default class YouTube {
+export default class YouTube { 
     constructor() {
         this.sdk = null;
         this.stepsToShowFullAdv = 120;
@@ -61,6 +61,11 @@ export default class YouTube {
             return this.playerData; 
         }        
     }
+
+    setFullScreenSteps(value){
+        this.stepsToShowFullAdv = value;
+    }
+
 
     firstFrameReady() {
         if (this.sdk && this.sdk.game) {

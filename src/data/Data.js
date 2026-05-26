@@ -1,4 +1,4 @@
-export default class Data {
+export default class Data { 
     static gameW = 720;
     static gameH = 1280;
     static isMenuPlayFirst = true;    

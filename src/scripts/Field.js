@@ -96,7 +96,7 @@ export default class Field {
                 };
             }
         });
-        if (!this.game.audio.isMusicPlay) this.game.audio.playSound('gameOver');
+        this.game.audio.playSound('gameOver');
         if (promises.length > 0) {
             await Promise.all(promises);
         }
