@@ -86,6 +86,7 @@ export default class MenuScene extends BaseScene {
         if (Data.isMenuPlayFirst){
             Data.isMenuPlayFirst = false;
             this.game.sdk.gameReady();
+            this.input.once('pointerdown', () => { this.game.sdk.soundStartResume();});
             this.game.audio.startMusic('music');
         }
     }    

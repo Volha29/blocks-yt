@@ -52,8 +52,7 @@ export default class YouTube {
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
                 this.isAudioYTPlay = isEnabled; 
                 this.updateAudioState();
-            });
-             
+            });             
 
             return this.playerData;
         } catch (error) {
@@ -84,6 +83,29 @@ export default class YouTube {
         this.game.audio.playMusic();
     }
  
+    soundStartResume() {
+        this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
+        this.game.sound.mute = !(this.isAudioYTPlay);
+    
+        if (this.isAudioYTPlay && this.game.sound && this.game.sound.context) {
+            if (this.game.sound.context.state === 'suspended') {
+                this.game.sound.context.resume()
+                    .then(() => {
+                        console.log("YT SDK: Аудиоконтекст успешно разбужен кликом из MenuScene!");
+                        if (this.game.audio && typeof this.game.audio.playMusic === 'function') {
+                            this.game.audio.playMusic();
+                        }
+                    })
+                    .catch(err => {
+                    console.error("YT SDK: Не удалось разбудить контекст при клике:", err);
+                    });
+            } else {
+                if (this.game.audio && typeof this.game.audio.playMusic === 'function') {
+                    this.game.audio.playMusic();
+                }
+            }
+        }
+    }
     
 
     async save(newData) {
@@ -183,9 +205,7 @@ export default class YouTube {
         if (this.game) {
             console.log("YT SDK: Resume");
             this.game.loop.resume();
-            if (this.game.sound.context) {
-                this.game.sound.context.resume();
-            }         
+            if (this.game.sound.context) { this.game.sound.context.resume(); }         
             this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
             this.updateAudioState();
             this.game.scene.getScenes(false).forEach(scene => {
