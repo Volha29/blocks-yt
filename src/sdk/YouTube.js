@@ -3,7 +3,7 @@ export default class YouTube {
         this.sdk = null;
         this.stepsToShowFullAdv = 120;
         this.startICountStepsToShow = 120;
-        this.isAudioYTPlay = true;
+        this.isAudioYTPlay = false;//true
         this.playerData = { 
             score: 0,
             bestScore: 0,
@@ -19,6 +19,7 @@ export default class YouTube {
         this.game = game; 
 
         if (typeof window.ytgame === 'undefined') {
+            this.isAudioYTPlay = true;
             this.updateAudioState();
             return this.playerData;
         }
@@ -38,7 +39,7 @@ export default class YouTube {
             } 
 
             this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;    
-            this.updateAudioState();
+            //this.updateAudioState();
 
 
              this.sdk.system.onPause(() => {
@@ -80,7 +81,7 @@ export default class YouTube {
 
     updateAudioState() {
         this.game.sound.mute = !(this.isAudioYTPlay);
-        //this.game.audio.playMusic();
+        this.game.audio.playMusic();
     }
  
     soundStartResume() {
