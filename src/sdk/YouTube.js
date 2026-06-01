@@ -80,7 +80,7 @@ export default class YouTube {
 
     updateAudioState() {
         this.game.sound.mute = !(this.isAudioYTPlay);
-        this.game.audio.playMusic();
+        //this.game.audio.playMusic();
     }
  
     soundStartResume() {

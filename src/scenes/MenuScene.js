@@ -43,9 +43,9 @@ export default class MenuScene extends BaseScene {
         const playerData = this.registry.get('playerData');
         let playerWantsSound = (playerData.hasBeenSaved === 1);
         this.game.audio.setSoundState(playerWantsSound);
-        const soundBtn = this.add.image(Data.gameW / 2 - 100, Data.gameH / 2 + 250, 'ui',
+        const soundBtn = this.add.image(Data.gameW / 2, Data.gameH / 2 + 250, 'ui',
             playerWantsSound ? 'sound' : 'nosound')
-            .setInteractive({ useHandCursor: true });
+            .setInteractive({ useHandCursor: true }); // Data.gameW / 2 - 100
 
         soundBtn.on('pointerdown', () => {
             playerWantsSound = !playerWantsSound;
@@ -62,6 +62,7 @@ export default class MenuScene extends BaseScene {
             });
             this.game.audio.playSound('clickBtn');
         });
+        /*
         let playerWantsMusic = (playerData.isMusicPlay === 1);
         this.game.audio.setMusicState(playerWantsMusic);
         const musicBtn = this.add.image(Data.gameW / 2 + 100, Data.gameH / 2 + 250, 'ui',
@@ -81,13 +82,13 @@ export default class MenuScene extends BaseScene {
                 yoyo: true
             });
             this.game.audio.playSound('clickBtn');
-        });        
+        });     */   
 
         if (Data.isMenuPlayFirst){
             Data.isMenuPlayFirst = false;
             this.game.sdk.gameReady();
-            this.input.once('pointerdown', () => { this.game.sdk.soundStartResume();});
-            this.game.audio.startMusic('music');
+            //this.input.once('pointerdown', () => { this.game.sdk.soundStartResume();});
+            //this.game.audio.startMusic('music');
         }
     }    
 }
