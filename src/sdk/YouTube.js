@@ -1,3 +1,5 @@
+import Data from '../data/Data.js';//<==========
+
 export default class YouTube { 
     constructor() {
         this.sdk = null;
