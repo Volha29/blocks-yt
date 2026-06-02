@@ -43,7 +43,7 @@ export default class YouTube {
             this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;    
             //this.updateAudioState();
             //<=================
-            Data.text += '44:' + this.isAudioYTPlay + '\n';
+            Data.text += '46:' + this.isAudioYTPlay + '\n';
 
 
              this.sdk.system.onPause(() => {

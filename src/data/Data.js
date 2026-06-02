@@ -1,5 +1,5 @@
 export default class Data { 
-    static text = '';
+    static text = 'ghghghg\nhfhghghg\ngjgjjgj\nghghhhghg\nhghghghhg\nghghhhghgh\ngjghg\n';
     static gameW = 720;
     static gameH = 1280;
     static isMenuPlayFirst = true;    
