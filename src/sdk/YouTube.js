@@ -40,6 +40,8 @@ export default class YouTube {
 
             this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;    
             //this.updateAudioState();
+            //<=================
+            Data.text += '44:' + this.isAudioYTPlay + '\n';
 
 
              this.sdk.system.onPause(() => {
@@ -51,7 +53,9 @@ export default class YouTube {
             }); 
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
-                this.isAudioYTPlay = isEnabled; 
+                this.isAudioYTPlay = isEnabled;
+                //<=================
+            Data.text += '58:' + this.isAudioYTPlay + '\n'; 
                 this.updateAudioState();
             });             
 
@@ -81,6 +85,8 @@ export default class YouTube {
 
     updateAudioState() {
         this.game.sound.mute = !(this.isAudioYTPlay);
+        //<=================
+            Data.text += '89:' + this.isAudioYTPlay + '\n';
         this.game.audio.playMusic();
     }
  
@@ -188,7 +194,9 @@ export default class YouTube {
 
     pauseGame() {
         if (this.game) {
-            console.log("YT SDK: Pause");        
+            console.log("YT SDK: Pause"); 
+            //<=================
+            Data.text += '199:YT SDK: Pause' + this.isAudioYTPlay + '\n';       
             this.game.sound.mute = true;        
             this.game.loop.pause();
             this.game.scene.getScenes(true).forEach(scene => {
@@ -205,6 +213,8 @@ export default class YouTube {
     resumeGame() {
         if (this.game) {
             console.log("YT SDK: Resume");
+            //<=================
+            Data.text += '217:YT SDK: Resume' + this.isAudioYTPlay + '\n';
             this.game.loop.resume();
             if (this.game.sound.context) { this.game.sound.context.resume(); }         
             this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;

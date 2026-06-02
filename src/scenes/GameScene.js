@@ -18,7 +18,7 @@ export default class GameScene extends BaseScene {
         this.shadow = new Shadow(this);
         this.isBoardLocked = false;
         this.initInputHandlers();
-        this.loadGame();           
+        this.loadGame(); 
     }  
 
 
