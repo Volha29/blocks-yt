@@ -85,6 +85,8 @@ export default class MenuScene extends BaseScene {
         if (Data.isMenuPlayFirst){
             Data.isMenuPlayFirst = false;
             this.game.sdk.gameReady();
+            //<=================
+            Data.text += 'MenuScene 89:' + this.isAudioYTPlay + '\n';
             //this.input.once('pointerdown', () => { this.game.sdk.soundStartResume();});
             this.game.audio.startMusic('music');
             //this.game.sdk.updateAudioState();
