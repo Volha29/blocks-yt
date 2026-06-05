@@ -13,6 +13,7 @@ export default class AudioManager {
     setMusicState(value){ this.isMusicPlay = value; this.playMusic(); }
     startMusic(key) {
         if (!this.game) return;
+        if (this.bgMusic) return;
         this.bgMusic = this.game.sound.add(key, { loop: true, volume: this.musicVolume  });
         this.playMusic();
     }

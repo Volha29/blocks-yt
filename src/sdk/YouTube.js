@@ -1,4 +1,4 @@
-import Data from '../data/Data.js';//<==========
+import Data from '../data/Data.js';
 
 export default class YouTube { 
     constructor() {
@@ -40,11 +40,7 @@ export default class YouTube {
                 }
             } 
 
-            this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;    
-            //this.updateAudioState();
-            //<=================
-            Data.text += '46:' + this.isAudioYTPlay + '\n';
-
+            this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
 
              this.sdk.system.onPause(() => {
                 this.pauseGame();
@@ -56,8 +52,6 @@ export default class YouTube {
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
                 this.isAudioYTPlay = isEnabled;
-                //<=================
-            Data.text += '58:' + this.isAudioYTPlay + '\n'; 
                 this.updateAudioState();
             });             
 
@@ -86,9 +80,8 @@ export default class YouTube {
     }
 
     updateAudioState() {
+        if (Data.isMenuPlayFirst) return;
         this.game.sound.mute = !(this.isAudioYTPlay);
-        //<=================
-            Data.text += '89:' + this.isAudioYTPlay + '\n';
         this.game.audio.playMusic();
     }
  
@@ -100,17 +93,16 @@ export default class YouTube {
             if (this.game.sound.context.state === 'suspended') {
                 this.game.sound.context.resume()
                     .then(() => {
-                        console.log("YT SDK: Аудиоконтекст успешно разбужен кликом из MenuScene!");
-                        if (this.game.audio && typeof this.game.audio.playMusic === 'function') {
-                            this.game.audio.playMusic();
+                        if (this.game.audio && typeof this.game.audio.startMusic === 'function') {
+                            this.game.audio.startMusic('music');
                         }
                     })
                     .catch(err => {
                     console.error("YT SDK: Не удалось разбудить контекст при клике:", err);
                     });
             } else {
-                if (this.game.audio && typeof this.game.audio.playMusic === 'function') {
-                    this.game.audio.playMusic();
+                if (this.game.audio && typeof this.game.audio.startMusic === 'function') {
+                    this.game.audio.startMusic('music');
                 }
             }
         }

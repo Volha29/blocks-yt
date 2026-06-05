@@ -82,17 +82,10 @@ export default class MenuScene extends BaseScene {
             });
             this.game.audio.playSound('clickBtn');
         }); 
-        console.log(`========> MENUSCENE Data.isMenuPlayFirst=${Data.isMenuPlayFirst}`);
-        console.log(`========> MENUSCENE this.isAudioYTPlay=${this.game.sdk.isAudioYTPlay}`);
         if (Data.isMenuPlayFirst){
             Data.isMenuPlayFirst = false;
-            this.game.sdk.gameReady();
-            //<=================
-            console.log('========> MENUSCENE');
-            Data.text += 'MenuScene 89:' + this.game.sdk.isAudioYTPlay + '\n';
-            //this.input.once('pointerdown', () => { this.game.sdk.soundStartResume();});
-            this.game.audio.startMusic('music');
-            //this.game.sdk.updateAudioState();
+            this.game.sdk.gameReady();            
+            this.input.once('pointerdown', () => { this.game.sdk.soundStartResume();});            
         }
     }    
 }
