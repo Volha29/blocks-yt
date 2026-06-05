@@ -48,14 +48,6 @@ export default class UIScene extends BaseScene {
 
 
     createUI() {   
-        this.add.text(Data.gameW / 2, Data.gameH / 2, `${Data.text}`, { 
-            fontSize: '48px',
-            fontFamily: 'EXO2',            
-            fontStyle: 'bold', 
-            fill: '#000000' 
-        }).setOrigin(0.5).setDepth(100);
-        
-
         const { width, height } = this.scale.gameSize;
         this.homeBtn = this.add.image(20, 20, 'ui', 'home')
                 .setInteractive({ useHandCursor: true })
