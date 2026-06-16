@@ -51,6 +51,7 @@ export default class YouTube {
             }); 
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
+                console.log(`54 YT this.isAudioYTPlay = ${isEnabled}`);
                 this.isAudioYTPlay = isEnabled;
                 this.updateAudioState();
             });             
@@ -80,6 +81,7 @@ export default class YouTube {
     }
 
     updateAudioState() {
+        console.log(`84 YT Data.isMenuPlayFirst = ${Data.isMenuPlayFirst}`);
         if (Data.isMenuPlayFirst) return;
         this.game.sound.mute = !(this.isAudioYTPlay);
         this.game.audio.playMusic();
