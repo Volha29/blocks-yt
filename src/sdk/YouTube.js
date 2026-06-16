@@ -52,6 +52,7 @@ export default class YouTube {
             }); 
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
+                console.log(`55 YT isEnabled =${isEnabled}`);
                 this.isAudioYTPlay = isEnabled;
                 this.updateAudioState();
             });             
@@ -93,7 +94,7 @@ export default class YouTube {
     }
  
     soundStartResume() { 
-        this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
+        //this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
            console.log(`95 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         if (!this.isAudioYTPlay) return;
             console.log(`97 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
