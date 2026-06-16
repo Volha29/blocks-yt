@@ -81,7 +81,9 @@ export default class YouTube {
     }
 
     updateAudioState() {
+          console.log(`84 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
         if (Data.isMenuPlayFirst) return;
+            console.log(`86 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
         if (this.isAudioPlayFirst)
             { this.soundStartResume(); }
             else {
@@ -92,9 +94,9 @@ export default class YouTube {
  
     soundStartResume() { 
         this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
-
+           console.log(`95 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
         if (!this.isAudioYTPlay) return;
-
+            console.log(`97 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
         this.game.sound.mute = !(this.isAudioYTPlay);
     
         if (this.isAudioYTPlay && this.game.sound && this.game.sound.context) {
