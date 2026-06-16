@@ -52,7 +52,7 @@ export default class MenuScene extends BaseScene {
             soundBtn.setFrame(playerWantsSound ? 'sound' : 'nosound');
             playerData.hasBeenSaved = playerWantsSound ? 1 : 0;
             this.registry.set('playerData', playerData);
-            this.game.sdk.save({ hasBeenSaved: playerData.hasBeenSavede });            
+            this.game.sdk.save({ hasBeenSaved: playerData.hasBeenSaved });            
             this.game.audio.setSoundState(playerWantsSound);
             this.tweens.add({
                 targets: soundBtn,

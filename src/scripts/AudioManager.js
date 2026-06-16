@@ -1,3 +1,4 @@
+import Data from '../data/Data.js';
 export default class AudioManager {
     constructor() {
         this.game = null;
@@ -9,8 +10,14 @@ export default class AudioManager {
     }
     
     init(game) { this.game = game; }
+
     setSoundState(value){ this.isSoundPlay = value; }
-    setMusicState(value){ this.isMusicPlay = value; this.playMusic(); }
+
+    setMusicState(value){
+        this.isMusicPlay = value;
+        if (Data.isMenuPlayFirst) return;
+        this.playMusic();
+    }
     startMusic(key) {
         if (!this.game) return;
         if (this.bgMusic) return;

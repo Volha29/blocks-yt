@@ -6,6 +6,7 @@ export default class YouTube {
         this.stepsToShowFullAdv = 120;
         this.startICountStepsToShow = 120;
         this.isAudioYTPlay = false;//true
+        this.isAudioPlayFirst = true;
         this.playerData = { 
             score: 0,
             bestScore: 0,
@@ -51,7 +52,6 @@ export default class YouTube {
             }); 
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
-                console.log(`54 YT this.isAudioYTPlay = ${isEnabled}`);
                 this.isAudioYTPlay = isEnabled;
                 this.updateAudioState();
             });             
@@ -81,10 +81,11 @@ export default class YouTube {
     }
 
     updateAudioState() {
-        console.log(`84 YT Data.isMenuPlayFirst = ${Data.isMenuPlayFirst}`);
         if (Data.isMenuPlayFirst) return;
         this.game.sound.mute = !(this.isAudioYTPlay);
-        this.game.audio.playMusic();
+        if (this.isAudioPlayFirst)
+            { this.soundStartResume(); }
+            else { this.game.audio.playMusic(); }
     }
  
     soundStartResume() {
@@ -108,6 +109,7 @@ export default class YouTube {
                 }
             }
         }
+        this.isAudioPlayFirst = false;
     }
     
 
@@ -190,9 +192,7 @@ export default class YouTube {
 
     pauseGame() {
         if (this.game) {
-            console.log("YT SDK: Pause"); 
-            //<=================
-            Data.text += '199:YT SDK: Pause' + this.isAudioYTPlay + '\n';       
+            console.log("YT SDK: Pause");                    
             this.game.sound.mute = true;        
             this.game.loop.pause();
             this.game.scene.getScenes(true).forEach(scene => {
@@ -209,8 +209,6 @@ export default class YouTube {
     resumeGame() {
         if (this.game) {
             console.log("YT SDK: Resume");
-            //<=================
-            Data.text += '217:YT SDK: Resume' + this.isAudioYTPlay + '\n';
             this.game.loop.resume();
             if (this.game.sound.context) { this.game.sound.context.resume(); }         
             this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
