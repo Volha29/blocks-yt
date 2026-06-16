@@ -88,8 +88,11 @@ export default class YouTube {
             else { this.game.audio.playMusic(); }
     }
  
-    soundStartResume() {
+    soundStartResume() { 
         this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
+
+        if (!this.isAudioYTPlay) return;
+
         this.game.sound.mute = !(this.isAudioYTPlay);
     
         if (this.isAudioYTPlay && this.game.sound && this.game.sound.context) {
