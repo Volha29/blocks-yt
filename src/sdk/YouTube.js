@@ -81,22 +81,22 @@ export default class YouTube {
     }
 
     updateAudioState() {
-          console.log(`84 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
+          console.log(`84 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         if (Data.isMenuPlayFirst) return;
-            console.log(`86 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
+            console.log(`86 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         if (this.isAudioPlayFirst)
-            { this.soundStartResume(); }
+            { this.soundStartResume(); console.log(`88 YT soundStartResume `); }
             else {
                 this.game.sound.mute = !(this.isAudioYTPlay);
-                this.game.audio.playMusic();
+                this.game.audio.playMusic(); console.log(`91 YT playMusic `);
                 }
     }
  
     soundStartResume() { 
         this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
-           console.log(`95 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
+           console.log(`95 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         if (!this.isAudioYTPlay) return;
-            console.log(`97 YT this.isAudioYTPlay ={this.isAudioYTPlay}`); 
+            console.log(`97 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         this.game.sound.mute = !(this.isAudioYTPlay);
     
         if (this.isAudioYTPlay && this.game.sound && this.game.sound.context) {
