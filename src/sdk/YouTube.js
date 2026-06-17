@@ -52,7 +52,6 @@ export default class YouTube {
             }); 
             
             this.sdk.system.onAudioEnabledChange((isEnabled) => {
-                console.log(`55 YT isEnabled =${isEnabled}`);
                 this.isAudioYTPlay = isEnabled;
                 this.updateAudioState();
             });             
@@ -82,22 +81,18 @@ export default class YouTube {
     }
 
     updateAudioState() {
-          console.log(`84 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         if (Data.isMenuPlayFirst) return;
-            console.log(`86 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         if (this.isAudioPlayFirst)
-            { this.soundStartResume(); console.log(`88 YT soundStartResume `); }
+            { this.soundStartResume(); }
             else {
                 this.game.sound.mute = !(this.isAudioYTPlay);
-                this.game.audio.playMusic(); console.log(`91 YT playMusic `);
+                this.game.audio.playMusic(); 
                 }
     }
  
     soundStartResume() { 
         //this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
-           console.log(`95 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         if (!this.isAudioYTPlay) return;
-            console.log(`97 YT this.isAudioYTPlay =${this.isAudioYTPlay}`); 
         this.game.sound.mute = !(this.isAudioYTPlay);
     
         if (this.isAudioYTPlay && this.game.sound && this.game.sound.context) {

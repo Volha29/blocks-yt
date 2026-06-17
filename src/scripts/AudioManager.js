@@ -22,21 +22,17 @@ export default class AudioManager {
         if (!this.game) return;
         if (this.bgMusic) return;
         this.bgMusic = this.game.sound.add(key, { loop: true, volume: this.musicVolume  });
-        console.log(`25 AM isAudioYTPlay =${this.game.sdk.isAudioYTPlay}, startMusic`); 
         this.playMusic();
     }
     playMusic() {
         if (!this.bgMusic || !this.game) return;
         if (!this.game.sdk.isAudioYTPlay || !this.isMusicPlay) {
-            console.log(`30 AM isAudioYTPlay =${this.game.sdk.isAudioYTPlay}, isPause`); 
             this.bgMusic.pause();
             return;
         }
         if (this.bgMusic.isPaused) {
-            console.log(`33 AM isAudioYTPlay =${this.game.sdk.isAudioYTPlay}, isResume`); 
             this.bgMusic.resume();
         } else if (!this.bgMusic.isPlaying) {
-            console.log(`33 AM isAudioYTPlay =${this.game.sdk.isAudioYTPlay}, isPlay`); 
             this.bgMusic.play();
         }
         this.bgMusic.setVolume(this.musicVolume);              
