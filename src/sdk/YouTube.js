@@ -179,8 +179,8 @@ export default class YouTube {
     
     
     showRewardedVideo(onRewardCallback) {
-        if (!this.ysdk) return;
-        this.ysdk.adv.showRewardedVideo({
+        if (!this.sdk) return;
+        this.sdk.adv.showRewardedVideo({
             callbacks: {
                 onOpen: () => {
                     this.pauseGame();
@@ -222,7 +222,7 @@ export default class YouTube {
                 this.soundStartResume();
             } else {
                 if (this.game.sound.context) { this.game.sound.context.resume(); }         
-                this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
+                //this.isAudioYTPlay = this.sdk ? this.sdk.system.isAudioEnabled() : true;
                 this.updateAudioState();
                 }
             this.game.scene.getScenes(false).forEach(scene => {
